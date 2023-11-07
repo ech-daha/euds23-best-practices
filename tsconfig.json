@@ -1,6 +1,11 @@
 {
   "compilerOptions": {
-    "lib": ["dom", "es2015.promise", "es5", "es6"],
+    "lib": [
+      "dom",
+      "es2015.promise",
+      "es5",
+      "es6"
+    ],
     "target": "ES6",
     "removeComments": true,
     "jsx": "react",
@@ -19,7 +24,12 @@
     "skipLibCheck": false,
     "resolveJsonModule": true
   },
-  "types": [],
+  "src": [
+    "node_modules/@arcgis/core"
+  ],
+  "types": [
+    "node_modules/@arcgis/core"
+  ],
   "include": [
     "src/*.d.ts",
     "src/**/*.ts",

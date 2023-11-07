@@ -1,13 +1,23 @@
+import { Extent } from 'esri/geometry'
+import PlaceResult from 'esri/rest/support/PlaceResult'
 import { create } from 'zustand'
 
-interface Store {
-    basemap: 'streets-navigation-vector' | 'topo-vector',
-    toggleBasemap: () => void
+interface AppStore {
+    placeResults: PlaceResult[]
+    setPlaceResults: (results: PlaceResult[]) => void
+    currentMapExtent: Extent
+    setCurrentMapExtent: (value: Extent) => void
+    queryExtent: Extent
+    setQueryExtent: () => void
 }
 
-const useStore = create<Store>((set) => ({
-    basemap: 'topo-vector',
-    toggleBasemap: () => set((state) => ({ basemap: state.basemap === 'topo-vector' ? 'streets-navigation-vector' : 'topo-vector' }))
+const useAppStore = create<AppStore>((set, get) => ({
+    placeResults: [],
+    setPlaceResults: (results) => set(() => ({ placeResults: results })),
+    currentMapExtent: null,
+    setCurrentMapExtent: (value) => set(() => ({ currentMapExtent: value })),
+    queryExtent: null,
+    setQueryExtent: () => set(() => ({ queryExtent: get().currentMapExtent }))
 }))
 
-export default useStore
+export default useAppStore

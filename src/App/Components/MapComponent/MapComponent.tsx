@@ -1,134 +1,132 @@
-import React, { FC, useCallback, useEffect, useRef, useState } from 'react'
-import './MapComponent.scss'
+import React, { FC, useEffect, useRef, useState } from 'react'
+import './MapComponent.css'
 import '@arcgis/core/assets/esri/themes/dark/main.css'
 import Map from '@arcgis/core/Map'
 import MapView from '@arcgis/core/views/MapView'
 import GraphicsLayer from '@arcgis/core/layers/GraphicsLayer'
-import Circle from '@arcgis/core/geometry/Circle'
-import Point from '@arcgis/core/geometry/Point'
 import Graphic from '@arcgis/core/Graphic'
 import PlacesQueryParameters from '@arcgis/core/rest/support/PlacesQueryParameters'
-import WebStyleSymbol from '@arcgis/core/symbols/WebStyleSymbol'
 import * as places from '@arcgis/core/rest/places'
+import useAppStore from '../../Store'
+import * as reactiveUtils from '@arcgis/core/core/reactiveUtils'
+import getWebSymbolByCategory from './getWebSymbolByCategory'
+import PlaceResult from '@arcgis/core/rest/support/PlaceResult'
 
+const apiKey = 'AAPKab50a0839364493cbfe5c885e8fed915t8pSHX0PmBL2OPluDgiTVFsi4AZPI_AaXeAix3W744GNJVMlIJ_S6MyzkZ_cW6FA'
 
-const apiKey = 'AAPK6e2fadae5eb54b6babe8aa25a9a827dbuFUI9n0px060HG0j4Vl9XSufwdWHUv67T37TcRcEAaSM7fCJnNqyevDx_NrW5m5E'
-
-const circleSymbol = {
-    type: 'simple-fill',
-    style: 'solid',
-    color: [3, 140, 255, 0.1],
-    outline: {
-        width: 3,
-        color: [3, 140, 255]
-    }
+interface MapComponentProps {
+    selectedPlace: PlaceResult
 }
 
-// WebStyleSymbols for place features by category
-const hospital = new WebStyleSymbol({
-    name: 'hospital',
-    styleName: 'Esri2DPointSymbolsStyle'
-})
-const retail = new WebStyleSymbol({
-    name: 'shopping-center',
-    styleName: 'Esri2DPointSymbolsStyle'
-})
-const landmark = new WebStyleSymbol({
-    name: 'landmark',
-    styleName: 'Esri2DPointSymbolsStyle'
-})
-const arts = new WebStyleSymbol({
-    name: 'museum',
-    styleName: 'Esri2DPointSymbolsStyle'
-})
-const business = new WebStyleSymbol({
-    name: 'industrial-complex',
-    styleName: 'Esri2DPointSymbolsStyle'
-})
-const community = new WebStyleSymbol({
-    name: 'embassy',
-    styleName: 'Esri2DPointSymbolsStyle'
-})
-const dining = new WebStyleSymbol({
-    name: 'vineyard',
-    styleName: 'Esri2DPointSymbolsStyle'
-})
-const sports = new WebStyleSymbol({
-    name: 'sports-complex',
-    styleName: 'Esri2DPointSymbolsStyle'
-})
-const travel = new WebStyleSymbol({
-    name: 'trail',
-    styleName: 'Esri2DPointSymbolsStyle'
-})
+const MapComponent: FC<MapComponentProps> = (props) => {
 
-
-const MapComponent: FC = () => {
+    // Setting up Map and MapView
     const mapRef = useRef()
 
     const placesLayer = new GraphicsLayer({
-        id: 'graphicsLayer'
-    })
-    const bufferLayer = new GraphicsLayer({
-        id: 'bufferLayer'
+        id: 'places-layer'
     })
 
     const [map, setMap] = useState(new Map({
         basemap: 'streets-navigation-vector',
-        layers: [placesLayer, bufferLayer]
+        layers: [placesLayer]
     }))
 
-    const showPlaces = useCallback(async (clickPoint: Point) => {
-        // Buffer graphic represents click location and search radius
-        const circleGeometry = new Circle({
-            center: clickPoint,
-            geodesic: true,
-            numberOfPoints: 100,
-            radius: 500, // set radius to 500 meters
-            radiusUnit: 'meters'
-        })
-        const circleGraphic = new Graphic({
-            geometry: circleGeometry,
-            symbol: circleSymbol
-        })
-        // Add buffer graphic to the view
-        bufferLayer.graphics.add(circleGraphic)
+    const [mapView, setMapView] = useState<MapView>(null)
 
-        // Pass search area, categories, and API Key to places service
-        const chicagoPlacesQueryParameters = new PlacesQueryParameters({
-            apiKey: apiKey,
-            categoryIds: ['10000'],
-            radius: 500, // set radius to 500 meters
-            point: clickPoint
-        })
-        // The results variable represents the PlacesQueryResult
-        const results = await places.queryPlacesNearPoint(chicagoPlacesQueryParameters)
-        console.log(results)
-        // Pass the PlacesQueryResult to the tabulatePlaces() function
-        // tabulatePlaces(results)
-    }, [])
-
-
-    // Build up view...
     useEffect(() => {
-        const view = new MapView({
+        setMapView(new MapView({
             container: mapRef.current,
             map: map,
-            center: [8, 46.5],
-            zoom: 7
-        })
-
-        view.on('click', (event) => {
-            bufferLayer.removeAll() // Remove graphics from GraphicsLayer of previous buffer
-            placesLayer.removeAll() // Remove graphics from GraphicsLayer of previous places search
-            const clickPoint = new Point()
-            clickPoint.longitude = Math.round(event.mapPoint.longitude * 1000) / 1000
-            clickPoint.latitude = Math.round(event.mapPoint.latitude * 1000) / 1000
-            clickPoint && showPlaces(clickPoint)
-        })
-
-        return () => view.container = null // ... and destroy when component unmounts
+            center: [8.5, 47.4],
+            zoom: 12
+        }))
+        return () => {
+            mapView.destroy()
+            map.destroy()
+        }
     }, [])
+
+    // Add onClick Listener
+    const [queryExtent, setQueryExtent] = useAppStore(state => [state.queryExtent, state.setQueryExtent])
+    const [results, setResults] = useAppStore(state => [state.placeResults, state.setPlaceResults])
+
+    useEffect(() => {
+        if (!queryExtent) return
+        if (mapView.zoom < 15) mapView.goTo({ target: mapView.center, zoom: 15 })
+        let radius = queryExtent.height
+        if (queryExtent.width < radius) radius = queryExtent.width
+        if (radius > 10000) radius = 10000
+
+        const placesQueryParameters = new PlacesQueryParameters({
+            apiKey: apiKey,
+            radius: Math.round(radius),
+            point: queryExtent.center,
+            pageSize: 10
+        })
+        places.queryPlacesNearPoint(placesQueryParameters).then((res) => {
+            setResults(res.results)
+        })
+    }, [queryExtent])
+
+    useEffect(() => {
+        if (!mapView) return
+        mapView.on('click', (event) => {
+            mapView.goTo({ target: event.mapPoint, zoom: 15 }).then(() => {
+                setQueryExtent()
+            })
+        })
+    }, [mapView])
+
+    useEffect(() => {
+        if (!mapView || !mapView.map) return
+        const placesLayer = mapView.map.findLayerById('places-layer') as GraphicsLayer
+        placesLayer.removeAll()
+
+        results.forEach((place) => {
+            const placeGraphic = new Graphic({
+                geometry: place.location,
+                attributes: {
+                    placeId: place.placeId
+                }
+            })
+            placeGraphic.symbol = getWebSymbolByCategory(place.categories[0].categoryId)
+            placesLayer.graphics.add(placeGraphic)
+        })
+    }, [results])
+
+
+    // Highlight feature when clicked
+    const [highlightSelect, setHighlightSelect] = useState<__esri.Handle>(null)
+    useEffect(() => {
+        highlightSelect?.remove()
+        setHighlightSelect(null)
+        if (!props.selectedPlace) return
+        const plLayer = mapView.map.findLayerById('places-layer') as GraphicsLayer
+        mapView.whenLayerView(plLayer).then((layerView) => {
+            const graphic = plLayer.graphics.toArray().find(gr => gr.getAttribute('placeId') === props.selectedPlace.placeId)
+            const highlight = layerView.highlight(graphic)
+            setHighlightSelect(highlight)
+            mapView.goTo(graphic)
+        })
+
+    }, [props.selectedPlace])
+
+
+
+    // Watch MapView property
+    const [currentMapExtent, setCurrentMapExtent] = useAppStore(state => [state.currentMapExtent, state.setCurrentMapExtent])
+
+    useEffect(() => {
+        if (!mapView) return
+        reactiveUtils.watch(
+            () => mapView.extent,
+            extent => setCurrentMapExtent(extent)
+        )
+    }, [mapView])
+
+
+
 
     return <div className='map' ref={mapRef}></div>
 }
