@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>Callback</title>
+  <script>
+    function loadHandler() {
+        debugger;
+      if (opener) {
+        if (location.hash) {
+          opener.require("esri/kernel").id.setOAuthResponseHash(location.hash);
+          close();
+        }
+      }
+      else {
+        close();
+      }
+    }
+  </script>
+</head>
+<body onload="loadHandler();">
+</body>
+</html>

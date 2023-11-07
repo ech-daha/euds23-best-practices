@@ -1,0 +1,41 @@
+{
+  "name": "esrich.web.template.react",
+  "version": "1.0.0",
+  "description": "React Template für Geo Webapps",
+  "author": "Esri Schweiz",
+  "license": "ISC",
+  "type": "module",
+  "main": "webpack.config.js",
+  "dependencies": {
+    "@arcgis/core": "^4.28.7",
+    "@esri/calcite-components-react": "^1.10.0",
+    "dayjs": "^1.11.7",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "react-router-dom": "^6.18.0",
+    "zustand": "^4.4.6"
+  },
+  "scripts": {
+    "build": "vite build",
+    "dev": "vite serve",
+    "preview": "vite preview",
+    "lint": "eslint"
+  },
+  "devDependencies": {
+    "@types/arcgis-js-api": "^4.27.0",
+    "@types/react": "^18.2.36",
+    "@types/react-dom": "^18.2.14",
+    "@typescript-eslint/eslint-plugin": "^6.10.0",
+    "@typescript-eslint/parser": "^6.10.0",
+    "@vitejs/plugin-react": "^4.1.1",
+    "eslint": "^8.53.0",
+    "eslint-plugin-import": "^2.29.0",
+    "eslint-plugin-jsdoc": "^46.8.2",
+    "prettier": "^3.0.3",
+    "sass": "^1.69.5",
+    "tslib": "^2.6.2",
+    "typescript": "^5.2.2",
+    "vite": "^4.5.0",
+    "vite-plugin-html": "^3.2.0"
+  }
+}

@@ -1,0 +1,8 @@
+.esri-view .esri-view-surface--inset-outline:focus::after {
+    outline: initial !important;
+}
+
+.map {
+    height: 100%;
+    width: 100%;
+}
