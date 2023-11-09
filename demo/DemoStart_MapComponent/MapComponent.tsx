@@ -1,5 +1,4 @@
 import React, { FC, useEffect, useRef, useState } from 'react'
-import './MapComponent.css'
 import '@arcgis/core/assets/esri/themes/dark/main.css'
 import Map from '@arcgis/core/Map'
 import MapView from '@arcgis/core/views/MapView'

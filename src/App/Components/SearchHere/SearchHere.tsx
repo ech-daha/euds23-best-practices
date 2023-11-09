@@ -1,5 +1,4 @@
 import React, { FC } from 'react'
-import './SearchHere.css'
 import { CalciteFab } from '@esri/calcite-components-react'
 import useAppStore from '../../Store'
 
