@@ -11,7 +11,6 @@ const SearchHere: FC<SearchHereProps> = (props) => {
     return <div className='search-here'>
         <CalciteFab
             text='Search in this area'
-            label='Search in this area'
             textEnabled={true}
             icon={null}
             onClick={props.onClicked}

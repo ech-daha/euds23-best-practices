@@ -23,13 +23,8 @@ const MapComponent: FC<MapComponentProps> = (props) => {
     // Setting up Map and MapView
     const mapRef = useRef()
 
-    const placesLayer = new GraphicsLayer({
-        id: 'places-layer'
-    })
-
     const [map, setMap] = useState(new Map({
-        basemap: 'streets-navigation-vector',
-        layers: [placesLayer]
+        basemap: 'streets-navigation-vector'
     }))
 
     const [mapView, setMapView] = useState<MapView>(null)
@@ -41,13 +36,26 @@ const MapComponent: FC<MapComponentProps> = (props) => {
             center: [8.5, 47.4],
             zoom: 12
         }))
-        return () => {
-            mapView.destroy()
-            map.destroy()
-        }
+        // Add Places Layer
+        const placesLayer = new GraphicsLayer({
+            id: 'places-layer'
+        })
+        map.add(placesLayer)
+        return () => mapView.destroy()
     }, [])
 
     // Add onClick Listener
+    useEffect(() => {
+        if (!mapView) return
+        mapView.on('click', (event) => {
+            mapView.goTo({ target: event.mapPoint, zoom: 15 })
+                .then(() => {
+                    setQueryExtent()
+                })
+        })
+    }, [mapView])
+
+
     const [queryExtent, setQueryExtent] = useAppStore(state => [state.queryExtent, state.setQueryExtent])
     const [results, setResults] = useAppStore(state => [state.placeResults, state.setPlaceResults])
 
@@ -68,15 +76,6 @@ const MapComponent: FC<MapComponentProps> = (props) => {
             setResults(res.results)
         })
     }, [queryExtent])
-
-    useEffect(() => {
-        if (!mapView) return
-        mapView.on('click', (event) => {
-            mapView.goTo({ target: event.mapPoint, zoom: 15 }).then(() => {
-                setQueryExtent()
-            })
-        })
-    }, [mapView])
 
     useEffect(() => {
         if (!mapView || !mapView.map) return

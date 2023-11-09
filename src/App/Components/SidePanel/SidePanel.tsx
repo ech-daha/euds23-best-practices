@@ -31,7 +31,6 @@ const SidePanel: FC<SidePanelProps> = (props) => {
                                 onSelect={(value) => props.onSelect(value)}
                                 selectedPlace={props.selectedPlace}
                             />
-
                         }
                     </CalciteList>
                 </CalciteFlowItem>

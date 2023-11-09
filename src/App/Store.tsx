@@ -1,5 +1,5 @@
-import { Extent } from 'esri/geometry'
-import PlaceResult from 'esri/rest/support/PlaceResult'
+import { Extent } from '@arcgis/core/geometry'
+import PlaceResult from '@arcgis/core/rest/support/PlaceResult'
 import { create } from 'zustand'
 
 interface AppStore {

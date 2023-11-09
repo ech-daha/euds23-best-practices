@@ -1,4 +1,4 @@
-import React, { FC, useEffect } from 'react'
+import React, { FC } from 'react'
 import { CalciteListItem } from '@esri/calcite-components-react'
 import useAppStore from '../../Store'
 import PlaceResult from '@arcgis/core/rest/support/PlaceResult'
@@ -11,9 +11,6 @@ interface ResultListProps {
 const ResultList: FC<ResultListProps> = (props) => {
 
     const places = useAppStore(state => state.placeResults)
-
-    useEffect(() => console.log(props.selectedPlace), [props.selectedPlace])
-    useEffect(() => console.log(places), [places])
 
     return <div>
         <div style={{ padding: '10px', fontSize: 15 }}>Results</div>

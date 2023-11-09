@@ -24,15 +24,8 @@
     "skipLibCheck": false,
     "resolveJsonModule": true
   },
-  "src": [
-    "node_modules/@arcgis/core"
-  ],
-  "types": [
-    "node_modules/@arcgis/core"
-  ],
   "include": [
-    "src/*.d.ts",
-    "src/**/*.ts",
-    "src/**/*.tsx"
+    "./src/**/*",
+    "./node_modules/@arcgis/core/**/*.d.ts"
   ]
 }
