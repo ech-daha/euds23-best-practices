@@ -5,20 +5,17 @@ import useAppStore from '../../Store'
 import PlaceResult from '@arcgis/core/rest/support/PlaceResult'
 
 interface SidePanelProps {
-    onSelect: (place: PlaceResult) => void
-    selectedPlace: PlaceResult
+    placeResults: PlaceResult[]
 }
 
 const SidePanel: FC<SidePanelProps> = (props) => {
 
-    const results = useAppStore(state => state.placeResults)
-
-    return <div className='side-panel'>
+    return <div className='side-panel' style={{ margin: 5 }}>
         <CalcitePanel class="contents">
             <CalciteFlow id="flow">
                 <CalciteFlowItem>
-                    <CalciteList id="results">
-                        {results.length === 0 &&
+                    <CalciteList id="results" selectionAppearance='border' selectionMode='single-persist'>
+                        {props.placeResults.length === 0 &&
                             <CalciteNotice open>
                                 <div slot="message">
                                     Click on the map to search for nearby places
@@ -26,11 +23,8 @@ const SidePanel: FC<SidePanelProps> = (props) => {
                             </CalciteNotice>
                         }
                         {
-                            results.length > 0 &&
-                            <ResultList
-                                onSelect={(value) => props.onSelect(value)}
-                                selectedPlace={props.selectedPlace}
-                            />
+                            props.placeResults.length > 0 &&
+                            <ResultList placeResults={props.placeResults} />
                         }
                     </CalciteList>
                 </CalciteFlowItem>

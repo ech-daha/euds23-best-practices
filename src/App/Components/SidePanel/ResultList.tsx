@@ -4,24 +4,23 @@ import useAppStore from '../../Store'
 import PlaceResult from '@arcgis/core/rest/support/PlaceResult'
 
 interface ResultListProps {
-    onSelect: (place: PlaceResult) => void
-    selectedPlace: PlaceResult
+    placeResults: PlaceResult[]
 }
 
 const ResultList: FC<ResultListProps> = (props) => {
 
-    const places = useAppStore(state => state.placeResults)
+    const [selectedPlace, setSelectedPlace] = useAppStore(state => [state.selectedPlace, state.setSelectedPlace])
 
     return <div>
         <div style={{ padding: '10px', fontSize: 15 }}>Results</div>
         {
-            places.map(place =>
+            props.placeResults.map(place =>
                 <CalciteListItem
                     key={place.placeId}
                     description={`${place.categories[0].label} - ${Number((place.distance / 1000).toFixed(1))} km`}
                     label={place.name}
-                    selected={props.selectedPlace?.placeId === place.placeId}
-                    onCalciteListItemSelect={() => props.onSelect(place)}
+                    selected={selectedPlace?.placeId === place.placeId}
+                    onCalciteListItemSelect={() => setSelectedPlace(place)}
                 ></CalciteListItem>
             )
         }

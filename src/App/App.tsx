@@ -7,24 +7,25 @@ import SidePanel from './Components/SidePanel/SidePanel'
 import SearchHere from './Components/SearchHere/SearchHere'
 import useAppStore from './Store'
 import PlaceResult from '@arcgis/core/rest/support/PlaceResult'
+import { Extent } from '@arcgis/core/geometry'
 
 const App: FC = () => {
 
-    const [queryExtent, setQueryExtent] = useAppStore(state => [state.queryExtent, state.setQueryExtent])
+    const queryExtent = useAppStore(state => state.queryExtent)
     const currentMapExtent = useAppStore(state => state.currentMapExtent)
-    const [selectedPlace, setSelectedPlace] = useState<PlaceResult>(null)
+    const [placeResults, setPlaceResults] = useState<PlaceResult[]>([])
 
     return (
         <>
             <CalciteShell>
                 <CalciteShellPanel slot="panel-start" position="start" id="contents">
-                    <SidePanel onSelect={setSelectedPlace} selectedPlace={selectedPlace} />
+                    <SidePanel placeResults={placeResults} />
                 </CalciteShellPanel>
-                <MapComponent selectedPlace={selectedPlace} />
+                <MapComponent onPlaceResults={setPlaceResults} placeResults={placeResults} />
             </CalciteShell>
             {
                 !currentMapExtent?.equals(queryExtent) &&
-                <SearchHere onClicked={setQueryExtent}></SearchHere>
+                <SearchHere></SearchHere>
             }
         </>
     )

@@ -8,7 +8,9 @@ interface AppStore {
     currentMapExtent: Extent
     setCurrentMapExtent: (value: Extent) => void
     queryExtent: Extent
-    setQueryExtent: () => void
+    setQueryExtent: (extent: Extent) => void
+    selectedPlace: PlaceResult
+    setSelectedPlace: (placeResult: PlaceResult) => void
 }
 
 const useAppStore = create<AppStore>((set, get) => ({
@@ -17,7 +19,9 @@ const useAppStore = create<AppStore>((set, get) => ({
     currentMapExtent: null,
     setCurrentMapExtent: (value) => set(() => ({ currentMapExtent: value })),
     queryExtent: null,
-    setQueryExtent: () => set(() => ({ queryExtent: get().currentMapExtent }))
+    setQueryExtent: (extent) => set(() => ({ queryExtent: extent })),
+    selectedPlace: null,
+    setSelectedPlace: selectedPlace => set(() => ({ selectedPlace: selectedPlace }))
 }))
 
 export default useAppStore

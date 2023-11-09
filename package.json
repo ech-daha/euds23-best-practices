@@ -9,7 +9,6 @@
   "dependencies": {
     "@arcgis/core": "^4.28.7",
     "@esri/calcite-components-react": "^1.10.0",
-    "dayjs": "^1.11.7",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-router-dom": "^6.18.0",
@@ -18,14 +17,12 @@
   "scripts": {
     "build": "vite build",
     "dev": "vite serve",
-    "preview": "vite preview",
-    "lint": "eslint"
+    "preview": "vite preview"
   },
   "devDependencies": {
     "@types/react": "^18.2.36",
     "@types/react-dom": "^18.2.14",
     "@vitejs/plugin-react": "^4.1.1",
-    "prettier": "^3.0.3",
     "tslib": "^2.6.2",
     "typescript": "^5.2.2",
     "vite": "^4.5.0",

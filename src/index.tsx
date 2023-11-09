@@ -6,5 +6,5 @@ setAssetPath('https://unpkg.com/@esri/calcite-components/dist/calcite/assets')
 
 const root = createRoot(document.getElementById('root'))
 
-root.render(<App></App>)
+root.render(<App />)
 
