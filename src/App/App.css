@@ -27,3 +27,21 @@ body {
     flex-direction: column;
     height: 100vh;
 }
+
+.esri-view .esri-view-surface--inset-outline:focus::after {
+    outline: initial !important;
+}
+
+.map,
+.map-container {
+    height: 100%;
+    width: 100%;
+}
+
+.search-here {
+    position: absolute;
+    top: 20px;
+    z-index: 1000;
+    width: 100%;
+    left: 60%;
+}

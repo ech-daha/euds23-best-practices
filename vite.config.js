@@ -8,6 +8,7 @@ export default defineConfig({
     // Relative to the root
     outDir: '../dist',
   },
+  server: { hmr: false },
   plugins: [
     createHtmlPlugin({
       inject: {
@@ -17,8 +18,8 @@ export default defineConfig({
       },
     }),
     react({
-        // Use React plugin in all *.jsx and *.tsx files
-        include: '**/*.{jsx,tsx}',
-      }),
+      // Use React plugin in all *.jsx and *.tsx files
+      include: '**/*.{jsx,tsx}',
+    }),
   ],
 });
