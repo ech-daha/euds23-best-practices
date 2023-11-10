@@ -33,7 +33,7 @@ const MapComponent: FC = () => {
             zoom: 12
         })
         setMapView(mv)
-        return () => mapView.destroy()
+        return () => mv.destroy()
     }, [])
 
     // // 1.0 Setting up the variables
@@ -49,12 +49,13 @@ const MapComponent: FC = () => {
     useEffect(() => {
         if (!mapView) return
         map.add(placesLayer)
-        mapView.on('click', (event) => {
+        const clickHandle = mapView.on('click', (event) => {
             mapView.goTo({ target: event.mapPoint, zoom: 15 })
                 .then(() => {
                     setQueryExtent(mapView.extent)
                 })
         })
+        return () => clickHandle.remove()
     }, [mapView])
 
     // 1.2 Query when Extent Changes
@@ -110,10 +111,11 @@ const MapComponent: FC = () => {
     const setCurrentMapExtent = useAppStore(state => state.setCurrentMapExtent)
     useEffect(() => {
         if (!mapView) return
-        reactiveUtils.watch(
+        const watchHandle = reactiveUtils.watch(
             () => mapView.extent,
             extent => setCurrentMapExtent(extent)
         )
+        return () => watchHandle.remove()
     }, [mapView])
 
     return <div className='map' ref={mapRef}></div>
