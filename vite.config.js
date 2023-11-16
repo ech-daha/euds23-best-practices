@@ -8,7 +8,6 @@ export default defineConfig({
     // Relative to the root
     outDir: '../dist',
   },
-  server: { hmr: false },
   plugins: [
     createHtmlPlugin({
       inject: {

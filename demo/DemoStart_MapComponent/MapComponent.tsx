@@ -17,7 +17,7 @@ const apiKey = 'AAPKab50a0839364493cbfe5c885e8fed915t8pSHX0PmBL2OPluDgiTVFsi4AZP
 const MapComponent: FC = () => {
 
     // 0. Setting up Map and MapView
-    const mapRef = useRef()
+    const mapRef = useRef<HTMLDivElement>(null)
 
     const [map, setMap] = useState(new Map({
         basemap: 'streets-navigation-vector'
@@ -36,6 +36,7 @@ const MapComponent: FC = () => {
         return () => mv.destroy()
     }, [])
 
+    // // 1 Add Places on Map on Clicking -----------------------------------------------------
     // // 1.0 Setting up the variables
     // const [queryExtent, setQueryExtent] = useState<Extent>()
     // const [placeResults, setPlaceResults] = useState<PlaceResult[]>()
@@ -53,7 +54,7 @@ const MapComponent: FC = () => {
     //                 setQueryExtent(mapView.extent)
     //             })
     //     })
-    //     return () =>  clickHandle.remove()
+    //     return () => clickHandle.remove()
     // }, [mapView])
 
     // // 1.2 Query when Extent Changes
@@ -87,8 +88,11 @@ const MapComponent: FC = () => {
     //     placesLayer.graphics.addMany(graphics)
     // }, [placeResults])
 
-    
-    // // 3. Highlight feature when clicked
+    // 2. Show Results in SidePanel ---------------------------------------------------------------------
+    // Put placeResults above to AppStore
+    // const [placeResults, setPlaceResults] = useAppStore(state => [state.placeResults, state.setPlaceResults])
+
+    // // 3. Highlight feature when selected in SidePanel -----------------------------------------------
     // const selectedPlace = useAppStore(state => state.selectedPlace)
     // const [highlightSelect, setHighlightSelect] = useState<__esri.Handle>(null)
     // useEffect(() => {
@@ -103,7 +107,10 @@ const MapComponent: FC = () => {
     //     })
     // }, [selectedPlace])
 
-    // // 4. Watch Map Extent
+    // // 4. Watch Map Extent ---------------------------------------------------------------------------
+    // // 4.1 Put queryExtent to AppStore
+    // // const [queryExtent, setQueryExtent] = useAppStore(state => [state.queryExtent, state.setQueryExtent])
+    // // 4.2 Put currentExtent to AppStore
     // const setCurrentMapExtent = useAppStore(state => state.setCurrentMapExtent)
     // useEffect(() => {
     //     if (!mapView) return
@@ -111,7 +118,7 @@ const MapComponent: FC = () => {
     //         () => mapView.extent,
     //         extent => setCurrentMapExtent(extent)
     //     )
-    //      return () => watchHandle.remove()
+    //     return () => watchHandle.remove()
     // }, [mapView])
 
     return <div className='map' ref={mapRef}></div>
